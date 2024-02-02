@@ -1,179 +1,45 @@
+// Get a reference to the main gallery element:
 let gallery = document.querySelectorAll(".gallery")[0];
+
+// Get arrays of gallery items and images:
 let galleryItems = document.querySelectorAll(".gallery-item");
 let galleryImages = document.querySelectorAll(".gallery > div > .gallery-image");
+
+// Get a reference to the first gallery image (likely for specific use):
 let galleryImage = document.querySelector(".gallery-image");
 
-let numberTabIndex = function(elementsArray){
-    let i = 1;
-    if(elementsArray.tabIndex == undefined || elementsArray.tabIndex == null){
-        elementsArray.forEach(function(element){
-            element.tabIndex = i;
-            i++;
-		});
-	}
-}
+// Function to assign tabindex values sequentially to elements:
+let numberTabIndex = function(elementsArray) {
+  let i = 1;
 
+  // Check if elements already have tabindex assigned:
+  if (elementsArray.tabIndex == undefined || elementsArray.tabIndex == null) {
+    elementsArray.forEach(function(element) {
+      // Assign a tabindex value for keyboard navigation:
+      element.tabIndex = i;
+      i++;
+    });
+  }
+};
+
+// Apply tabindex values to gallery items:
+// Ensure keyboard navigation for gallery items (explained previously)
 numberTabIndex(galleryItems);
 
-let imgResize = function() {
-
-    let igLayoutWidth = document.querySelector(".ig-layout").clientWidth;
-    let widthPercent = (77.05 / 320);
-    let makeWidth = (window.innerWidth <= 1528)? Math.floor(igLayoutWidth * widthPercent) : Math.floor(window.innerWidth * widthPercent);
-    gallery.style.gridTemplateColumns = `repeat( auto-fill, minmax(${makeWidth}px, 1fr) )`;
-    gallery.style.gridAutoRows = `${makeWidth}px`;
-    
-    for (let i = 0; i < galleryImages.length; i++) {
-
-		let getItemType = galleryImages[i].parentElement.querySelector(".gallery-item-type");
-		
-		if(getItemType !== null && getItemType.querySelector("i.fa").classList.contains("fa-video")){
-			getItemType.querySelector("i.fa").classList.remove("fa-video");
-			getItemType.querySelector("i.fa").classList.add("fa-video-camera")
-		}
-
-        let makeIndex = parseInt(i + 1);
-        let parentWidth = galleryImages[i].parentElement.clientWidth;
-        let parentHeight = galleryImages[i].parentElement.clientHeight;
-        let parentLargeSize = (parentWidth < parentHeight)? parentHeight : parentWidth
-        
-        if(parentWidth > parentHeight){
-
-            galleryImages[i].style.width = `${parentWidth}px`;
-
-            if(galleryImages[i].clientHeight > galleryImages[i].clientWidth && galleryImages[i].clientHeight > parentLargeSize){
-                galleryImages[i].style.transform = 'scale(1.1)';
-				galleryImages[i].style.transform = 'translateY(15%)';
-
-                let avoidImageArr = [8, 10, 11, 12];
-                if(avoidImageArr.indexOf(makeIndex) >= 1){
-                    galleryImages[i].style.transform = 'translateY(0%)';
-                }
-            }
-
-            if(galleryImages[i].clientHeight <= parentWidth && galleryImages[i].clientHeight < parentLargeSize){
-                galleryImages[i].style.transform = 'scale(1.5)';
-            }
-        }
-    }
-}
-
-window.addEventListener("load", function(){
-    imgResize();
-});
-
-window.addEventListener("resize", function(){
-    imgResize();
-});
-
-
-let galleryTabs = document.querySelectorAll('.gallery-nav > a[role="tab"]');
-let tabIndex = 0;
-let postsIndexes = [];
-let reelsIndexes = [];
-let taggedIndexes = [];
-
-galleryTabs.forEach(function(a){ // used a as element for a tag
-	a.tabIndex = (tabIndex + 1);
-	tabIndex++;
-
-    a.addEventListener("click", function(){
-		window.event.preventDefault();
-		let getAction = a.href.split('/').filter(function(nE){return nE != '';}).pop();
-        let toggleAction = (getAction === 'reels')? 'video' :((getAction === 'tagged')? 'gallery' : 'all');
-
-        if(getAction.length > 0) {
-			galleryItems.forEach(function(image){
-				if(toggleAction == 'all'){
-					image.style.display = '';
-				}
-				else {
-					let galleryItemType = image.querySelector(".gallery-item-type");
-					
-					if(galleryItemType !== null){
-						if(toggleAction == 'video'){
-							let actionName = galleryItemType.querySelector("span").textContent.toLocaleLowerCase();
-							if(actionName == 'video'){
-								galleryItemType.parentElement.style.display = '';
-							}
-							else {
-								galleryItemType.parentElement.style.display = 'none';
-							}
-						}
-						else if(toggleAction == 'gallery'){
-							let actionName = galleryItemType.querySelector("span").textContent.toLocaleLowerCase();
-							if(actionName == 'gallery'){
-								galleryItemType.parentElement.style.display = '';
-							}
-							else {
-								galleryItemType.parentElement.style.display = 'none';
-							}
-						}
-					}
-					else {
-						image.style.display = 'none';
-					}
-				}
+// Handle view image overlay (if applicable)
+let imageOverlay = function() {
+	let viewBox = document.querySelector(".view-box");
+	if(viewBox !== undefined && viewBox !== null){
+		if(viewBox.classList.contains('view')){
+			viewBox.addEventListener('click', function(e){
+				viewImageOverlay(false);
 			});
 		}
-
-		galleryTabs.forEach(function(tab){
-			tab.classList.remove('active')
-		});
-
-		a.classList.add('active');
-    });
-});
-
-let galleryItemInfo = document.querySelectorAll(".gallery-item-info");
-
-galleryItemInfo.forEach(function(infoDiv){
-	
-	infoDiv.addEventListener("click", function(e){ // e for event
-		let eParent = e.target.parentElement;
-		let eSpan = eParent.querySelector('span').textContent;
-		let eNum = parseInt(eParent.innerText);
-		let eClass = (eSpan.toLocaleLowerCase() == 'likes:')? 'liked' : ((eSpan.toLocaleLowerCase() == 'comments:')? 'comment' : '');
-		
-		if(e.target.classList.contains('gallery-item-info')){ return;}
-		
-		eParent.classList.toggle(eClass);
-
-		if(eParent.classList.contains(eClass)){
-			let newTC = eParent.innerHTML.replace(eNum, (eNum + 1));
-			if(eClass == 'comment'){
-				if(confirm("Do you want to comment?")){
-					eParent.innerHTML = newTC;
-				}
-			}
-			else {
-				eParent.innerHTML = newTC;
-			}
-		} else {
-			if(eClass == 'comment'){
-				if(confirm("Do you want to comment?")){
-					let newTC = eParent.innerHTML.replace(eNum, (eNum + 1));
-					eParent.innerHTML = newTC;
-				}
-			}
-			let newTC = eParent.innerHTML.replace(eNum, (eNum - 1));
-			eParent.innerHTML = newTC;
-		}
-	});
-});
-
-let getGalleryItemInfo
-
-let viewImageHref;
-let viewBox = document.querySelector(".view-box");
-if(viewBox !== undefined && viewBox !== null){
-	if(viewBox.classList.contains('view')){
-		viewBox.addEventListener('click', function(e){
-			viewImageOverlay(false);
-		});
 	}
 }
+imageOverlay();
 
+// Function to manage the view image overlay
 let viewImageOverlay = function(state='') {
 	let viewBox = document.querySelector(".view-box");
 	let viewBoxWidth = window.getComputedStyle(viewBox).getPropertyValue("width");
@@ -230,8 +96,8 @@ let viewImageOverlay = function(state='') {
 	}
 	
 	viewBox.addEventListener('click', function(e){
-
 		if(e.target.localName !== 'img'){
+			console.log(e.target.classList.contains('previous-nav*'));
 			if(e.target.classList.contains('fa-search-plus')){
 				e.target.parentElement.parentElement.style.width = '';
 				e.target.parentElement.parentElement.style.height = '';
@@ -327,17 +193,16 @@ let viewImageOverlay = function(state='') {
 					e.target.parentElement.style.height = window.innerHeight + 'px';
 					e.target.parentElement.setAttribute('height',  `${window.innerHeight}px`);
 				}
-				else {
-					console.log('2');
-				}
 			}
 			else {
+				
 				let zoomableImage = e.target;
 				
 				if(zoomElement.classList.contains('fa-search-plus')){
 					zoomElement.classList.add('fa-search-minus');
 					zoomElement.classList.remove('fa-search-plus');
 				} 
+
 				else if(zoomElement.classList.contains('fa-search-minus')){
 					zoomElement.classList.add('fa-search-plus');
 					zoomElement.classList.remove('fa-search-minus');
@@ -348,10 +213,6 @@ let viewImageOverlay = function(state='') {
 
 					e.target.style.transform = `scale(1)`;
 
-					// e.target.parentElement.style.width = (window.innerWidth * .50) + 'px';
-					// e.target.parentElement.setAttribute('width',  `${(window.innerWidth * .50)}px`);
-					// e.target.setAttribute('width',  `${(window.innerWidth * .50)}px`);
-					// e.target.style.width = (window.innerWidth * .50) + 'px';
 					e.target.parentElement.setAttribute('width',  `${window.innerWidth}px`);
 					e.target.parentElement.setAttribute('style',  `width: ${window.innerWidth}px`)
 					
@@ -381,68 +242,286 @@ let viewImageOverlay = function(state='') {
 }
 
 
+// Function for resizing and adjusting gallery images
+let imgResize = function() {
+  // Get main layout width
+  let igLayoutWidth = document.querySelector(".ig-layout").clientWidth;
 
-galleryItems.forEach(function(gi){
-	gi.addEventListener('click', function(e){
-		if(e.target.classList.contains('gallery-item-info')){
-			viewImageHref = e.target.parentElement.querySelector('img').src;
-			viewImageOverlay(true);
+  // Calculate image width based on window size and scaling factor
+  let widthPercent = (77.05 / 320);
+  let makeWidth = (window.innerWidth <= 1528)
+    ? Math.floor(igLayoutWidth * widthPercent)
+    : Math.floor(window.innerWidth * widthPercent);
+
+  // Set grid layout for gallery container
+  gallery.style.gridTemplateColumns = `repeat(auto-fill, minmax(${makeWidth}px, 1fr))`;
+  gallery.style.gridAutoRows = `${makeWidth}px`;
+
+  // Iterate through each gallery image
+  for (let i = 0; i < galleryImages.length; i++) {
+    // Update video icons for gallery items (likely for visual consistency)
+    let getItemType = galleryImages[i].parentElement.querySelector(".gallery-item-type");
+    if (getItemType !== null && getItemType.querySelector("i.fa").classList.contains("fa-video")) {
+      getItemType.querySelector("i.fa").classList.remove("fa-video");
+      getItemType.querySelector("i.fa").classList.add("fa-video-camera");
+    }
+
+    // Resize and position images based on layout and dimensions
+    let makeIndex = parseInt(i + 1);
+    let parentWidth = galleryImages[i].parentElement.clientWidth;
+    let parentHeight = galleryImages[i].parentElement.clientHeight;
+    let parentLargeSize = (parentWidth < parentHeight) ? parentHeight : parentWidth;
+
+    if (parentWidth > parentHeight) {
+      galleryImages[i].style.width = `${parentWidth}px`;
+
+      if (
+        galleryImages[i].clientHeight > galleryImages[i].clientWidth &&
+        galleryImages[i].clientHeight > parentLargeSize
+      ) {
+        galleryImages[i].style.transform = 'scale(1.1) translateY(15%)';
+
+        // Apply special adjustments for specific images
+        let avoidImageArr = [8, 10, 11, 12];
+        if (avoidImageArr.indexOf(makeIndex) >= 1) {
+          galleryImages[i].style.transform = 'translateY(0%)';
+        }
+      } else if (galleryImages[i].clientHeight <= parentWidth && galleryImages[i].clientHeight < parentLargeSize) {
+        galleryImages[i].style.transform = 'scale(1.5)';
+      }
+    }
+  }
+};
+
+// Call imgResize on window load and resize events
+window.addEventListener("load", function() {
+  imgResize();
+});
+window.addEventListener("resize", function() {
+  imgResize();
+});
+
+let isGalleryTabs = function () {
+	// Select gallery tabs and initialize variables for tab management
+	let galleryTabs = document.querySelectorAll('.gallery-nav > a[role="tab"]');
+	let tabIndex = 0;
+
+	// Iterate through each gallery tab
+	galleryTabs.forEach(function(a){ // used a as element for a tag
+		a.tabIndex = (tabIndex + 1);
+		tabIndex++;
+
+		a.addEventListener("click", function(){
+			window.event.preventDefault();
+			
+			let getAction = a.href.split('/').filter(function(nE){return nE != '';}).pop();
+			let toggleAction = (getAction === 'reels')? 'video' :((getAction === 'tagged')? 'gallery' : 'all');
+
+			if(getAction.length > 0) {
+				galleryItems = document.querySelectorAll(".gallery-item");
+				galleryItems.forEach(function(image){
+					if(toggleAction == 'all'){
+						image.style.display = '';
+					}
+					else {
+						let galleryItemType = image.querySelector(".gallery-item-type");
+						
+						if(galleryItemType !== null){
+							if(toggleAction == 'video'){
+								let actionName = galleryItemType.querySelector("span").textContent.toLocaleLowerCase();
+								if(actionName == 'video'){
+									galleryItemType.parentElement.style.display = '';
+								}
+								else {
+									galleryItemType.parentElement.style.display = 'none';
+								}
+							}
+							else if(toggleAction == 'gallery'){
+								let actionName = galleryItemType.querySelector("span").textContent.toLocaleLowerCase();
+								if(actionName == 'gallery'){
+									galleryItemType.parentElement.style.display = '';
+								}
+								else {
+									galleryItemType.parentElement.style.display = 'none';
+								}
+							}
+						}
+						else {
+							image.style.display = 'none';
+						}
+					}
+				});
+			}
+
+			galleryTabs.forEach(function(tab){
+				tab.classList.remove('active');
+			});
+			a.classList.add('active');
+		});
+
+		galleryTabs.forEach(function(tab){
+			let isTabActive = tab.classList.contains('active');
+			if(isTabActive){
+				let getAction = tab.id.replace('-tab', '');
+				let toggleAction = (getAction === 'reels')? 'video' :((getAction === 'tagged')? 'gallery' : 'all');
+
+				if(getAction.length > 0) {
+					galleryItems = document.querySelectorAll(".gallery-item");
+					galleryItems.forEach(function(image){
+						if(toggleAction == 'all'){
+							image.style.display = '';
+						}
+						else {
+							let galleryItemType = image.querySelector(".gallery-item-type");
+							
+							if(galleryItemType !== null){
+								if(toggleAction == 'video'){
+									let actionName = galleryItemType.querySelector("span").textContent.toLocaleLowerCase();
+									if(actionName == 'video'){
+										galleryItemType.parentElement.style.display = '';
+									}
+									else {
+										galleryItemType.parentElement.style.display = 'none';
+									}
+								}
+								else if(toggleAction == 'gallery'){
+									let actionName = galleryItemType.querySelector("span").textContent.toLocaleLowerCase();
+									if(actionName == 'gallery'){
+										galleryItemType.parentElement.style.display = '';
+									}
+									else {
+										galleryItemType.parentElement.style.display = 'none';
+									}
+								}
+							}
+							else {
+								image.style.display = 'none';
+							}
+						}
+					});
+				}
+			}
+		});
+	});
+}
+isGalleryTabs();
+
+
+let galleryItemInfo = document.querySelectorAll(".gallery-item-info");
+
+galleryItemInfo.forEach(function(infoDiv){
+	
+	infoDiv.addEventListener("click", function(e){ // e for event
+		let eParent = e.target.parentElement;
+		let eSpan = eParent.querySelector('span').textContent;
+		let eNum = parseInt(eParent.innerText);
+		let eClass = (eSpan.toLocaleLowerCase() == 'likes:')? 'liked' : ((eSpan.toLocaleLowerCase() == 'comments:')? 'comment' : '');
+		
+		if(e.target.classList.contains('gallery-item-info')){ return;}
+		
+		eParent.classList.toggle(eClass);
+
+		if(eParent.classList.contains(eClass)){
+			let newTC = eParent.innerHTML.replace(eNum, (eNum + 1));
+			if(eClass == 'comment'){
+				if(confirm("Do you want to comment?")){
+					eParent.innerHTML = newTC;
+				}
+			}
+			else {
+				eParent.innerHTML = newTC;
+			}
+		} else {
+			if(eClass == 'comment'){
+				if(confirm("Do you want to comment?")){
+					let newTC = eParent.innerHTML.replace(eNum, (eNum + 1));
+					eParent.innerHTML = newTC;
+				}
+			}
+			let newTC = eParent.innerHTML.replace(eNum, (eNum - 1));
+			eParent.innerHTML = newTC;
+		}
+	});
+});
+
+// Add click events to gallery items
+galleryItems.forEach(function(gi) {
+	gi.addEventListener('click', function(e) {
+		if (e.target.classList.contains('gallery-item-info')) {
+		viewImageHref = e.target.parentElement.querySelector('img').src;
+		viewImageOverlay(true); // Open image overlay
 		}
 	});
 });
 
 
+let active = false; // Flag to prevent multiple calls
+
+// Function for loading more images on scroll
 let loadingImages = function(){
 	"use strict";
 	
-	let scrollTop = window.innerHeight * 0.99;
+	let scrollTop = window.innerHeight * 0.99; // Scroll position near bottom
 	let loader = document.querySelector(".loader");
-	let active = false;
-  
-	let loaderTop = loader.getBoundingClientRect().top + window.pageYOffset; // Get correct loader position
-  
-	if (Math.floor(window.scrollY) >= Math.floor(loaderTop)) {
-	  if (!active) {
-		active = true;
-  
-		// Ensure galleryItems is an array
-		const galleryItems = Array.from(document.querySelectorAll(".gallery > .gallery-item"));
-  
-		loader.classList.add('loading');
-		loader.style.display = 'block';
-  
-		let lastIndex = galleryItems.length;
-		const otherItems = [];
-  
-		setTimeout(() => {
-		  for (let i = 0; i < 12; i++) { // Loop 12 times instead of 13
-			const imgItem = document.createElement('imgItem');
-			const item = galleryItems[i];
-			lastIndex++;
-  
-			imgItem.className = item.className; // Use className for class assignment
-			imgItem.tabIndex = lastIndex;
-			imgItem.innerHTML = item.innerHTML;
-			otherItems.push(imgItem);
-		  }
-  
-		  const gallery = document.querySelector(".gallery"); // Get gallery element inside loop
-		  otherItems.forEach(e => gallery.appendChild(e));
-  
-		  loader.classList.remove('loading');
-		  loader.style.display = 'none';
-  
-		  active = false;
-		}, 3000); // Delay in milliseconds
-	  }
+
+	let top = Math.floor(document.querySelector(".loader").offsetTop) - 80; // Accurate loader position
+
+	if (Math.floor(window.scrollY) > top) { // If scrolled near loader
+		if (active !== true) { // If not already loading
+		  active = true;
+	
+		  // Convert galleryItems to an array
+		  const galleryItems = Array.from(document.querySelectorAll(".gallery > .gallery-item"));
+	
+		  loader.classList.add('loading'); // Show loading indicator
+		  loader.setAttribute('style', 'opacity: 1;');
+	
+		  let lastIndex = galleryItems.length; // Index for new items
+		  const otherItems = [];
+	
+		  setTimeout(() => { // Simulate loading delay
+			for (let i = 0; i < 12; i++) { // Create 12 new items
+			  const imgItem = document.createElement('imgItem');
+			  const item = galleryItems[i];
+			  lastIndex++;
+	
+			  imgItem.className = item.className; // Assign classes
+			  imgItem.tabIndex = lastIndex; // Set tabindex for accessibility
+			  imgItem.innerHTML = item.innerHTML; // Copy content
+			  otherItems.push(imgItem); // Add to collection
+			}
+	
+			const gallery = document.querySelector(".gallery"); // Access gallery element
+			otherItems.forEach(e => gallery.appendChild(e)); // Append new items
+			
+			loader.removeAttribute('style', 'opacity: 0;');
+			loader.classList.remove('loading'); // Hide loading indicator
+			isGalleryTabs();
+		  }, 3000); // 3-second delay
+		}
 	} else {
-	  loader.classList.remove('loading');
-	  loader.style.display = 'none'; // Hide loader consistently
+	loader.removeAttribute('style', 'opacity: 0;');
+	loader.classList.remove('loading'); // Hide loader if scrolled up
 	}
+
+	viewImageOverlay();
 }
 
 window.addEventListener('scroll', function() {
-	"use strict";
-
-	loadingImages();
+	"use strict"; // Enforce strict JavaScript mode for error prevention
+  
+	// Get the offset position of the "loader" element, adjusted for a 80px buffer
+	let top = Math.floor(document.querySelector(".loader").offsetTop) - 80;
+  
+	// If the current scroll position is past the top threshold:
+	if (Math.floor(window.scrollY) > top) {
+	  // Trigger image loading
+	  loadingImages();
+	}
+	else{
+		active = false;
+	}
+	isGalleryTabs();
+	imageOverlay();
   });
+  
