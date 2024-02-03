@@ -41,9 +41,8 @@ imageOverlay();
 
 // Function to manage the view image overlay
 let viewImageOverlay = function(state='') {
+	let galleryImages = document.querySelectorAll(".gallery > div > .gallery-image");
 	let viewBox = document.querySelector(".view-box");
-	let viewBoxWidth = window.getComputedStyle(viewBox).getPropertyValue("width");
-	let viewBoxHeight = window.getComputedStyle(viewBox).getPropertyValue("height");
 
 	let previewImage = function(state='') {
 		let viewedImage = viewBox.querySelector("picture img");
@@ -53,6 +52,7 @@ let viewImageOverlay = function(state='') {
 			});
 			viewBox.querySelector("picture").scrollTop = 0;
 			viewedImage.src = viewImageHref;
+			viewedImage.setAttribute('data-index', viewImageTabIndex);
 			
 			viewBox.querySelector("picture").setAttribute('style',  `height: ${window.innerHeight}px`);
 			viewedImage.setAttribute('height',  `${window.innerHeight}px`);
@@ -64,10 +64,14 @@ let viewImageOverlay = function(state='') {
 				viewedImage.style.height = '';
 				viewedImage.removeAttribute('height');
 			});
+
+			if(viewedImage.parentElement.querySelector('.preview-zoom i').classList.contains('fa-search-minus')){
+				viewedImage.parentElement.querySelector('.preview-zoom i').classList.add('fa-search-plus');
+				viewedImage.parentElement.querySelector('.preview-zoom i').classList.remove('fa-search-minus');
+			}
 		}
 		else {
 			viewedImage.src = '';
-			// viewedImage.style.height = '';
 			viewedImage.classList.remove('zoomable');
 			galleryImages.forEach(function(img){
 				img.removeAttribute('zoomable');
@@ -96,8 +100,8 @@ let viewImageOverlay = function(state='') {
 	}
 	
 	viewBox.addEventListener('click', function(e){
+		
 		if(e.target.localName !== 'img'){
-			console.log(e.target.classList.contains('previous-nav*'));
 			if(e.target.classList.contains('fa-search-plus')){
 				e.target.parentElement.parentElement.style.width = '';
 				e.target.parentElement.parentElement.style.height = '';
@@ -108,14 +112,14 @@ let viewImageOverlay = function(state='') {
 				zoomableImage.style.height = '';
 				zoomableImage.removeAttribute('height');
 
-				if(zoomableImage.clientHeight < window.innerHeight){
+				if(zoomableImage.clientHeight <= window.innerHeight){
 					zoomableImage.height = window.innerHeight + 'px';
 					zoomableImage.style.height = window.innerHeight + 'px';
 					zoomableImage.style.top = 0;
 					e.target.parentElement.parentElement.style.height = window.innerHeight + 'px';
 				}
 
-				if(zoomableImage.clientWidth > window.innerWidth){
+				if(zoomableImage.clientWidth >= window.innerWidth){
 					zoomableImage.width = (zoomableImage.clientWidth - (window.innerWidth * .20)) + 'px';
 					zoomableImage.style.width = (window.innerWidth - (window.innerWidth * .20)) + 'px';
 					e.target.parentElement.parentElement.style.width = (window.innerWidth - (window.innerWidth * .20)) + 'px';
@@ -132,7 +136,6 @@ let viewImageOverlay = function(state='') {
 
 				targetImage.setAttribute('style',  `height: ${window.innerHeight}px`);
 				targetImage.setAttribute('height',  `${window.innerHeight}px`);
-				// viewedImage.style.transform = `scale(1)`;
 				
 				targetImage.classList.add('zoomable');
 
@@ -140,23 +143,51 @@ let viewImageOverlay = function(state='') {
 				e.target.classList.remove('fa-search-minus');
 			}
 			else {
-				let pictureElement = (e.target.localName == 'picture')? e.target : ((e.target.localName == 'span')? e.target.parentElement.parentElement : e.target.parentElement);
-				pictureElement = (pictureElement.localName == 'picture')? pictureElement : e.target.parentElement.querySelector('picture');
+				let galleryItems = document.querySelectorAll('.gallery > .gallery-item');
+				let pictureElement = (e.target.localName == 'picture')? e.target : 
+										((e.target.localName == 'span')? e.target.parentElement.parentElement : e.target.parentElement);
+				pictureElement = (pictureElement.localName == 'picture')? pictureElement : 
+									((e.target.localName == 'i' && e.target.classList.contains('fa'))? e.target.parentElement.parentElement.parentElement : e.target.parentElement.querySelector('picture'));
 				
 				let imageElement = pictureElement.querySelector('img');
-				
-				pictureElement.style.width = '';
-				pictureElement.style.height = '';
-				pictureElement.removeAttribute('width');
-				pictureElement.removeAttribute('height');
-				imageElement.style.width = '';
-				imageElement.style.height = '';
-				imageElement.removeAttribute('width');
-				imageElement.removeAttribute('height');
+				let isPreviousClick = e.target.parentElement.classList.contains('previous');
+				let isNextClick= e.target.parentElement.classList.contains('next');
 
-				viewBox.classList.remove('view');
-				document.querySelector('body').classList.remove('no-scroll');
-				previewImage('hide');
+				if(isPreviousClick || isNextClick){
+					let targetIndex = document.querySelector(".view-box").querySelector('img').getAttribute('data-index');
+					let goBy = (isNextClick)? 1 : -1;
+					let newTargetIndex = parseInt(targetIndex) + goBy;
+					let newTarget = document.querySelector(`.gallery > .gallery-item[tabindex="${newTargetIndex}"]`);
+					if(newTarget !== null){
+						newTargetSrc = newTarget.querySelector('img').src;
+						
+						let viewedImage = viewBox.querySelector("picture img");
+						document.querySelectorAll('.gallery > .gallery-item > img').forEach(function(img){
+							img.removeAttribute('zoomable');
+						});
+
+						viewBox.querySelector("picture").scrollTop = 0;
+						viewedImage.src = newTargetSrc;
+						viewedImage.setAttribute('data-index', newTargetIndex);
+						
+						viewBox.querySelector("picture").setAttribute('style',  `height: ${window.innerHeight}px`);
+						viewedImage.setAttribute('height',  `${window.innerHeight}px`);
+						
+						viewedImage.classList.add('zoomable');
+						viewedImage.addEventListener('click', function(e){
+							viewedImage.style.width = '';
+							viewedImage.removeAttribute('width');
+						});
+					}
+				}
+				else {
+					if(e.target.localName == 'picture'){return;}
+
+					if(e.target.localName == 'span'){
+						viewBox.classList.remove('view');
+						document.querySelector('body').classList.remove('no-scroll');
+					}
+				}
 			}
 		}
 		else if(e.target.localName == 'img'){
@@ -449,6 +480,7 @@ galleryItems.forEach(function(gi) {
 	gi.addEventListener('click', function(e) {
 		if (e.target.classList.contains('gallery-item-info')) {
 		viewImageHref = e.target.parentElement.querySelector('img').src;
+		viewImageTabIndex = e.target.parentElement.tabIndex;
 		viewImageOverlay(true); // Open image overlay
 		}
 	});
@@ -464,45 +496,36 @@ let loadingImages = function(){
 	let scrollTop = window.innerHeight * 0.99; // Scroll position near bottom
 	let loader = document.querySelector(".loader");
 
-	let top = Math.floor(document.querySelector(".loader").offsetTop) - 80; // Accurate loader position
-
-	if (Math.floor(window.scrollY) > top) { // If scrolled near loader
-		if (active !== true) { // If not already loading
-		  active = true;
-	
-		  // Convert galleryItems to an array
-		  const galleryItems = Array.from(document.querySelectorAll(".gallery > .gallery-item"));
-	
-		  loader.classList.add('loading'); // Show loading indicator
-		  loader.setAttribute('style', 'opacity: 1;');
-	
-		  let lastIndex = galleryItems.length; // Index for new items
-		  const otherItems = [];
-	
-		  setTimeout(() => { // Simulate loading delay
-			for (let i = 0; i < 12; i++) { // Create 12 new items
-			  const imgItem = document.createElement('imgItem');
-			  const item = galleryItems[i];
-			  lastIndex++;
-	
-			  imgItem.className = item.className; // Assign classes
-			  imgItem.tabIndex = lastIndex; // Set tabindex for accessibility
-			  imgItem.innerHTML = item.innerHTML; // Copy content
-			  otherItems.push(imgItem); // Add to collection
-			}
-	
-			const gallery = document.querySelector(".gallery"); // Access gallery element
-			otherItems.forEach(e => gallery.appendChild(e)); // Append new items
-			
-			loader.removeAttribute('style', 'opacity: 0;');
-			loader.classList.remove('loading'); // Hide loading indicator
-			isGalleryTabs();
-		  }, 3000); // 3-second delay
-		}
-	} else {
-	loader.removeAttribute('style', 'opacity: 0;');
-	loader.classList.remove('loading'); // Hide loader if scrolled up
-	}
+	if (active !== true) { // If not already loading
+		active = true;
+  
+		// Convert galleryItems to an array
+		const galleryItems = Array.from(document.querySelectorAll(".gallery > .gallery-item"));
+  
+		loader.classList.add('loading'); // Show loading indicator
+  
+		let lastIndex = galleryItems.length; // Index for new items
+		const otherItems = [];
+  
+		setTimeout(() => { // Simulate loading delay
+		  for (let i = 0; i < 12; i++) { // Create 12 new items
+			const imgItem = document.createElement('div');
+			const item = galleryItems[i];
+			lastIndex++;
+  
+			imgItem.className = item.className; // Assign classes
+			imgItem.tabIndex = lastIndex; // Set tabindex for accessibility
+			imgItem.innerHTML = item.innerHTML; // Copy content
+			otherItems.push(imgItem); // Add to collection
+		  }
+  
+		  const gallery = document.querySelector(".gallery"); // Access gallery element
+		  otherItems.forEach(e => gallery.appendChild(e)); // Append new items
+		  
+		  loader.classList.remove('loading'); // Hide loading indicator
+		  isGalleryTabs();
+		}, 3000); // 3-second delay
+	  }
 
 	viewImageOverlay();
 }
@@ -511,15 +534,17 @@ window.addEventListener('scroll', function() {
 	"use strict"; // Enforce strict JavaScript mode for error prevention
   
 	// Get the offset position of the "loader" element, adjusted for a 80px buffer
-	let top = Math.floor(document.querySelector(".loader").offsetTop) - 80;
-  
+	let top = Math.floor(document.querySelector(".loader").offsetTop) - 150;
+	let loader = document.querySelector(".loader");
+
 	// If the current scroll position is past the top threshold:
-	if (Math.floor(window.scrollY) > top) {
+	if (Math.floor(window.scrollY) >= top) {
 	  // Trigger image loading
 	  loadingImages();
 	}
 	else{
 		active = false;
+		loader.classList.remove('loading'); // Hide loader if scrolled up
 	}
 	isGalleryTabs();
 	imageOverlay();
