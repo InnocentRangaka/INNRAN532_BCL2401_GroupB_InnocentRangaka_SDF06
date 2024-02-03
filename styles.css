@@ -152,7 +152,7 @@ dimensions and visual properties. */
 	gap: 20px;
 	border-width: 0;
 	flex-shrink: 1; /* Allows the container to shrink if needed */
-  flex-direction: column; /* Arrange elements in a vertical column */
+  	flex-direction: column; /* Arrange elements in a vertical column */
 	align-items: stretch;
 	box-sizing: border-box;
 }
@@ -210,7 +210,7 @@ button {
 	font-size: 14px;
 	font-weight: 600;
 	text-align: center;
-  border: none;
+  	border: none;
 	border-radius: 8px;
 	cursor: pointer;
 	transition: all .3s; /* Smooth transitions for hover effects */
@@ -230,6 +230,9 @@ button.profile-settings-btn {
 }
 .profile-settings-btn:hover {
 	background-color: rgb(219, 219, 219) !important;;
+}
+.profile-settings-btn:focus {
+	background-color: rgb(187, 187, 187) !important;;
 }
 
 /* Animation for settings button icon on hover */
@@ -288,9 +291,10 @@ ul {
 	text-align: center;
 	letter-spacing: 1px;
 	text-transform: uppercase;
-	border-top: 1px solid rgb(142, 142, 142);
+	border-top: 1px solid rgb(224,224, 224);
 	justify-content: center;
 	align-items: center;
+	margin-bottom: 15px;
 	gap: 60px;
 }
 
@@ -298,7 +302,7 @@ ul {
 	display: flex !important;
 	position: relative;
 	height: 52px;
-  color: rgba(0, 0, 0, .7); 
+  	color: rgba(0, 0, 0, .7); 
 	font-size: 12px;
 	font-weight: 600;
 	text-align: center;
@@ -318,6 +322,17 @@ ul {
 
 a, a:visited, .gallery-tab.active {
 	text-decoration: none;
+}
+
+a.gallery-tab:hover,
+a.gallery-tab.active:hover {
+	animation: colorToBlack 1s infinite; //* Animating the tab */
+}
+a.gallery-tab:focus {
+	border-top: 1px solid rgb(125,125, 125);
+}
+a.gallery-tab:focus span {
+	transform: scale(1.1);
 }
 
 a.gallery-tab.active {
@@ -559,7 +574,15 @@ svg.tab-icon {
 }
 
 .preview-nav .preview-nav-item:hover > i {
+	display: flex;
+	position: relative;
 	color: #FFF;
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	place-content: center;
+	place-items: center;
+	align-items: center;
 }
 
 .preview-nav .preview-nav-item.previous {
@@ -603,13 +626,15 @@ svg.tab-icon {
   border-top: 10px solid #000;
   width: 80px;
   height: 80px;
-  margin: 10rem auto;
+  margin: 30px auto 1px;
   transition: all; /* Prepare for smooth animation transitions */
   bottom: 0;
+  opacity: 0;
 }
 
 /* Styles for the loading state */
 .loader.loading {
+	opacity: 1;
   /* Apply the loading animation */
   animation: loading 2s linear infinite;
 }
@@ -670,6 +695,20 @@ svg.tab-icon {
     border-top: 1px solid black !important;
   }
 }
+
+/* GrowTabBorder Animation */
+@keyframes colorToBlack {
+	/* Start with invisible border */
+	0% {
+		color: rgb(125, 125, 125);
+	}
+	50% {
+	  color: black;
+	}
+	100% {
+		color: rgb(125, 125, 125);
+	}
+  }
 
 /* Loading Animation (likely for a spinner) */
 @keyframes loading {
