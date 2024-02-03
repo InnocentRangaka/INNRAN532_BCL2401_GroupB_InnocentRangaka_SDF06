@@ -1,7 +1,5 @@
-# INNRAN532_BCL2401_GroupB_InnocentRangaka_SDF06
 
-
-## 6 CodeSpace Pets Instagram Profile Project**
+## **6 CodeSpace Pets Instagram Profile Project**
 
 ### Overview
 
@@ -32,3 +30,6 @@ In this project, I challenged myself to recreate a simplified Instagram profile 
 
 Great.
 
+#### Note
+
+Please the project on "with_js" folder for Javascript functionality, including image resizing, gallery preview, gallery filtering.....
