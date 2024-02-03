@@ -1,0 +1,375 @@
+<!-- Inspired by George Park: https://codepen.io/GeorgePark/pen/VXrwOP -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSpace Pets Instagram 😺</title>
+    <link rel="stylesheet" href="./styles.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    
+
+
+<div class="ig-layout">
+	<header>
+
+		<div class="container">
+
+			<div class="profile">
+
+				<div class="profile-image-box">
+
+					<div class="profile-image">
+
+						<img src="./../images/cat-codespace.png" alt="Profile photo of a cat wearing headphones">
+	
+					</div>
+
+					<div class="profile-edit" role="button" aria-label="Edit profile"><i class="fa fa-camera" aria-hidden="true"></i></div>
+
+				</div>
+
+				<div class="profile-user-info">
+					<div class="profile-user-settings">
+
+						<h1 class="profile-user-name">codespace_pets</h1>
+
+						<div class="profile-user-verification">
+							<svg aria-label="Verified" class="verified-image" fill="rgb(0, 149, 246)" height="18" role="img" viewBox="0 0 40 40" width="18">
+								<title>Verified</title>
+								<path d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z" fill-rule="evenodd"></path>
+							</svg>
+						</div>
+
+						<div class="profile-btns">
+							<button class="btn profile-edit-btn">Edit Profile</button>
+	
+							<button class="btn profile-settings-btn" aria-label="profile settings"><i class="fa fa-cog" aria-hidden="true"></i></button>	
+						</div>
+
+					</div>
+	
+					<div class="profile-stats">
+	
+						<ul>
+							<li><span class="profile-stat-count">549</span> posts</li>
+							<li><span class="profile-stat-count">45 682</span> followers</li>
+							<li><span class="profile-stat-count">1</span> following</li>
+						</ul>
+	
+					</div>
+	
+					<div class="profile-bio">
+	
+						<p><span class="profile-real-name">CodeSpace Pets 😺</span> The hangout place for the best pets 🐕🐇🐦</p>
+	
+					</div>
+				</div>
+
+			</div>
+			<!-- End of profile section -->
+
+		</div>
+		<!-- End of container -->
+
+	</header>
+
+	<main>
+
+		<div id="user-gallery" class="container">
+
+			<div class="gallery-nav">
+				
+				<a id="posts-tab" class="gallery-tab active" href="#" role="tab" tabindex="0" aria-selected="true">
+					<svg aria-label="Posts" class="tab-icon" fill="currentColor" height="24" role="img" viewBox="0 0 24 24" width="24">
+						<title>Posts</title>
+						<rect fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="18" x="3" y="3"></rect>
+						<line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="9.015" x2="9.015" y1="3" y2="21"></line>
+						<line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="14.985" x2="14.985" y1="3" y2="21"></line>
+						<line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="21" x2="3" y1="9.015" y2="9.015"></line>
+						<line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="21" x2="3" y1="14.985" y2="14.985"></line>
+					</svg>
+					<span>Posts</span>
+				</a>
+				<a id="reels-tab" class="gallery-tab" href="./reels/" role="tab" tabindex="0" aria-selected="true">
+					<svg aria-label="" class="tab-icon" fill="currentColor" height="12" role="img" viewBox="0 0 24 24" width="12">
+						<title>Reels</title>
+						<line fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" x1="2.049" x2="21.95" y1="7.002" y2="7.002"></line>
+						<line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="13.504" x2="16.362" y1="2.001" y2="7.002"></line>
+						<line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="7.207" x2="10.002" y1="2.11" y2="7.002"></line>
+						<path d="M2 12.001v3.449c0 2.849.698 4.006 1.606 4.945.94.908 2.098 1.607 4.946 1.607h6.896c2.848 0 4.006-.699 4.946-1.607.908-.939 1.606-2.096 1.606-4.945V8.552c0-2.848-.698-4.006-1.606-4.945C19.454 2.699 18.296 2 15.448 2H8.552c-2.848 0-4.006.699-4.946 1.607C2.698 4.546 2 5.704 2 8.552Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+						<path d="M9.763 17.664a.908.908 0 0 1-.454-.787V11.63a.909.909 0 0 1 1.364-.788l4.545 2.624a.909.909 0 0 1 0 1.575l-4.545 2.624a.91.91 0 0 1-.91 0Z" fill-rule="evenodd"></path>
+					</svg>
+					<span>Reels</span>
+				</a>
+				<a id="tagged-tab" class="gallery-tab" href="./tagged/" role="tab" tabindex="0" aria-selected="true">
+					<svg aria-label="" class="x1lliihq x1n2onr6 x1roi4f4" fill="currentColor" height="12" role="img" viewBox="0 0 24 24" width="12">
+						<title>Tagged</title>
+						<path d="M10.201 3.797 12 1.997l1.799 1.8a1.59 1.59 0 0 0 1.124.465h5.259A1.818 1.818 0 0 1 22 6.08v14.104a1.818 1.818 0 0 1-1.818 1.818H3.818A1.818 1.818 0 0 1 2 20.184V6.08a1.818 1.818 0 0 1 1.818-1.818h5.26a1.59 1.59 0 0 0 1.123-.465Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+						<path d="M18.598 22.002V21.4a3.949 3.949 0 0 0-3.948-3.949H9.495A3.949 3.949 0 0 0 5.546 21.4v.603" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+						<circle cx="12.072" cy="11.075" fill="none" r="3.556" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle>
+					</svg>
+					<span>Tagged</span>
+				</a>
+
+			</div>
+
+			<div class="gallery">
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/bailey.png" class="gallery-image"  alt="Photo of Bailey the dog">
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 56</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 2</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/startlett.jpg" class="gallery-image"  alt="Photo of Scartlett the dog">
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 89</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 5</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/mr-chomsky.png" class="gallery-image"  alt="Mr Chosmky">
+
+					<div class="gallery-item-type">
+
+						<span class="visually-hidden">Gallery</span>
+						<i class="fa fa-clone" aria-hidden="true"></i>
+
+					</div>
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes">
+								<span class="visually-hidden">Likes:</span>
+								<i class="fa fa-heart" aria-hidden="true"></i> 42
+							</li>
+							<li class="gallery-item-comments">
+								<span class="visually-hidden">Comments:</span>
+								<i class="fa fa-comment" aria-hidden="true"></i> 1
+							</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/scarab.png" class="gallery-image"  alt="Photo of Scarab the dog">
+
+					<div class="gallery-item-type">
+
+						<span class="visually-hidden">Video</span><i class="fa fa-video" aria-hidden="true"></i>
+
+					</div>
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 38</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 0</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/baronnashor.png" class="gallery-image"  alt="Photo of Baronnashor the dog">
+
+					<div class="gallery-item-type">
+
+						<span class="visually-hidden">Gallery</span><i class="fa fa-clone" aria-hidden="true"></i>
+
+					</div>
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 47</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 1</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/gabrielle.jpg" class="gallery-image"  alt="Photo of Gabrielle the dog">
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 94</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 3</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/jarrod.jpg" class="gallery-image"  alt="Photo of Jarrod the dog">
+
+					<div class="gallery-item-type">
+
+						<span class="visually-hidden">Gallery</span><i class="fa fa-clone" aria-hidden="true"></i>
+
+					</div>
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 52</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 4</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/mr_goose.jpg" class="gallery-image"  alt="Photo of Mr Goose the dog">
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 66</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 2</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/dog-codespace.png" class="gallery-image"  alt="Photo of CodeSpace Dog the dog">
+
+					<div class="gallery-item-type">
+
+						<span class="visually-hidden">Gallery</span><i class="fa fa-clone" aria-hidden="true"></i>
+
+					</div>
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 45</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 0</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/forrest.jpg" class="gallery-image"  alt="Photo of Forrest the dog">
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 34</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 1</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/louise.jpg" class="gallery-image"  alt="Photo of louise the dog">
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 41</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 0</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+				<div class="gallery-item" tabindex="0">
+
+					<img src="./../images/tired.jpg" class="gallery-image"  alt="Photo of Tired the dog">
+
+					<div class="gallery-item-type">
+
+						<span class="visually-hidden">Video</span><i class="fa fa-video" aria-hidden="true"></i>
+
+					</div>
+
+					<div class="gallery-item-info">
+
+						<ul>
+							<li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fa fa-heart" aria-hidden="true"></i> 30</li>
+							<li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fa fa-comment" aria-hidden="true"></i> 2</li>
+						</ul>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- End of gallery -->
+
+			<div class="loader loading"></div>
+
+		</div>
+		<!-- End of container -->
+
+		<div class="view-box">
+			<div class="view-image">
+				<picture>
+					<div class="cancel-preview"><span>x</span></div>
+					<div class="preview-nav">
+						<div class="preview-nav-item previous"><i class="fa fa-caret-left" aria-hidden="true"></i></div>
+						<div class="preview-nav-item next"><i class="fa fa-caret-right" aria-hidden="true"></i></div>
+					</div>
+					<img src="./../images/bailey.png" class="gallery-image" alt="">
+					<div class="preview-zoom">
+						<i class="fa fa-search-plus" aria-hidden="true"></i>
+					</div>
+				</picture>
+			</div>
+		</div>
+
+	</main>
+</div>
+
+<script src="./index.js"></script>
+
+</body>
+</html>
