@@ -1,3 +1,6 @@
+
+const body = document.querySelector("body");
+
 // Get a reference to the main gallery element:
 let gallery = document.querySelectorAll(".gallery")[0];
 
@@ -39,120 +42,191 @@ let imageOverlay = function() {
 }
 imageOverlay();
 
+let showPreviewImage = function(galleryImages,viewBox) {
+	let viewedImage = viewBox.querySelector("picture img");
+
+	galleryImages.forEach(function(img){
+		img.removeAttribute('zoomable');
+	});
+
+	viewBox.classList.add('view');
+	body.classList.add('no-scroll');
+
+	viewBox.querySelector("picture").scrollTop = 0;
+	viewedImage.src = viewImageHref;
+	viewedImage.setAttribute('data-index', viewImageTabIndex);
+	
+	viewBox.querySelector("picture").setAttribute('style',  `height: ${window.innerHeight}px`);
+	viewedImage.setAttribute('height',  `${window.innerHeight}px`);
+	viewedImage.style.transform = `scale(1)`;
+	viewedImage.removeAttribute('width');
+	viewedImage.removeAttribute('style', 'width');
+	
+	viewedImage.classList.add('zoomable');
+	viewedImage.addEventListener('click', function(e){
+		e.target.style.width = '';
+		e.target.style.height = '';
+		e.target.removeAttribute('height');
+	});
+
+	if(viewedImage.parentElement.querySelector('.preview-zoom i').classList.contains('fa-search-minus')){
+		viewedImage.parentElement.querySelector('.preview-zoom i').classList.add('fa-search-plus');
+		viewedImage.parentElement.querySelector('.preview-zoom i').classList.remove('fa-search-minus');
+	}
+}
+let hidePreviewImage = function(galleryImages,viewBox) {
+	let viewedImage = viewBox.querySelector("picture img");
+
+	viewBox.classList.remove('view');
+	body.classList.remove('no-scroll');
+
+	console.log('sdfsdfsdf');
+
+	viewedImage.src = '';
+	viewedImage.classList.remove('zoomable');
+	galleryImages.forEach(function(img){
+		img.removeAttribute('zoomable');
+	});
+	
+	if(viewedImage.parentElement.querySelector('.preview-zoom i').classList.contains('fa-search-minus')){
+		viewedImage.parentElement.querySelector('.preview-zoom i').classList.add('fa-search-plus');
+		viewedImage.parentElement.querySelector('.preview-zoom i').classList.remove('fa-search-minus');
+	}
+	else if(viewedImage.parentElement.querySelector('.preview-zoom i').classList.contains('fa-search-plus')){
+		viewedImage.parentElement.querySelector('.preview-zoom i').classList.add('fa-search-minus');
+		viewedImage.parentElement.querySelector('.preview-zoom i').classList.remove('fa-search-plus');
+	}
+}
+
 // Function to manage the view image overlay
 let viewImageOverlay = function(state='') {
 	let galleryImages = document.querySelectorAll(".gallery > div > .gallery-image");
 	let viewBox = document.querySelector(".view-box");
 
-	let previewImage = function(state='') {
-		let viewedImage = viewBox.querySelector("picture img");
-		if(state == 'show'){
-			galleryImages.forEach(function(img){
-				img.removeAttribute('zoomable');
-			});
-			viewBox.querySelector("picture").scrollTop = 0;
-			viewedImage.src = viewImageHref;
-			viewedImage.setAttribute('data-index', viewImageTabIndex);
-			
-			viewBox.querySelector("picture").setAttribute('style',  `height: ${window.innerHeight}px`);
-			viewedImage.setAttribute('height',  `${window.innerHeight}px`);
-			// viewedImage.style.transform = `scale(1)`;
-			
-			viewedImage.classList.add('zoomable');
-			viewedImage.addEventListener('click', function(e){
-				viewedImage.style.width = '';
-				viewedImage.style.height = '';
-				viewedImage.removeAttribute('height');
-			});
-
-			if(viewedImage.parentElement.querySelector('.preview-zoom i').classList.contains('fa-search-minus')){
-				viewedImage.parentElement.querySelector('.preview-zoom i').classList.add('fa-search-plus');
-				viewedImage.parentElement.querySelector('.preview-zoom i').classList.remove('fa-search-minus');
-			}
-		}
-		else {
-			viewedImage.src = '';
-			viewedImage.classList.remove('zoomable');
-			galleryImages.forEach(function(img){
-				img.removeAttribute('zoomable');
-			});
-			
-			if(viewedImage.parentElement.querySelector('.preview-zoom i').classList.contains('fa-search-minus')){
-				viewedImage.parentElement.querySelector('.preview-zoom i').classList.add('fa-search-plus');
-				viewedImage.parentElement.querySelector('.preview-zoom i').classList.remove('fa-search-minus');
-			}
-			else if(viewedImage.parentElement.querySelector('.preview-zoom i').classList.contains('fa-search-plus')){
-				viewedImage.parentElement.querySelector('.preview-zoom i').classList.add('fa-search-minus');
-				viewedImage.parentElement.querySelector('.preview-zoom i').classList.remove('fa-search-plus');
-			}
-		}
-	}
-
 	if((viewBox.classList.contains('view') || state == true) || (state == 'add' || state == 'show')){
-		viewBox.classList.add('view');
-		document.querySelector('body').classList.add('no-scroll');
-		previewImage('show');
+		showPreviewImage(galleryImages,viewBox);
 	}
 	if((!viewBox.classList.contains('view') || state == false) || (state == 'remove' || state == 'delete')){
-		viewBox.classList.remove('view');
-		document.querySelector('body').classList.remove('no-scroll');
-		previewImage('hide');
+		hidePreviewImage(galleryImages,viewBox);
+	}
+
+	let targetEl;
+	let targetElType;
+	let targetElClasses;
+	let targetElParent;
+	let targetElParents;
+	let zoomableImage;
+	let zoomableImageHeight;
+	let zoomableImageWidth;
+	let zoomElement;
+	const windowHeight = window.innerHeight;
+	const windowWidth = window.innerWidth;
+
+	let zoomImage = function(e, action=''){
+		targetEl = e.target;
+		targetElType = e.target.localName;
+		targetElClasses = e.target.classList;
+		targetElParent = e.target.parentElement;
+		targetElParents = e.target.parentElement.parentElement;
+		zoomableImage = targetElParents.querySelector('img');
+		zoomableImageHeight = zoomableImage.clientHeight;
+		zoomableImageWidth = zoomableImage.clientWidth;
+		zoomElement = targetElParent.querySelector('.preview-zoom i');
+
+		let isZoomIn = targetElClasses.contains('fa-search-plus');
+		const isZoomOut = targetElClasses.contains('fa-search-minus');
+		const zoomAction = action.toLocaleLowerCase();
+
+
+		if(isZoomIn && zoomAction == 'in'){
+			
+			targetElParents.style.width = '';
+			targetElParents.style.height = '';
+			targetElParents.removeAttribute('style','height');
+			targetElParents.removeAttribute('height');
+			viewBox.querySelector("picture").removeAttribute('style',  `height`);
+			viewBox.querySelector("picture").removeAttribute('style',  `width`);
+
+			zoomableImage.style.width = '';
+			zoomableImage.style.height = '';
+			zoomableImage.removeAttribute('height');
+
+			if(zoomableImageHeight > windowHeight){
+				zoomableImage.height = windowHeight + 'px';
+				zoomableImage.style.height = windowHeight + 'px';
+				zoomableImage.style.top = 0;
+				// targetElParents.style.height = windowHeight + 'px';
+				// targetElParents.width = windowWidth + 'px';
+			}
+			else if(zoomableImageWidth <= windowWidth){
+				zoomableImage.width = (zoomableImageWidth - (windowWidth * .20)) + 'px';
+				zoomableImage.style.width = (windowWidth - (windowWidth * .20)) + 'px';
+				// targetElParents.style.width = (windowWidth - (windowWidth * .20)) + 'px';
+			}
+
+			zoomableImage.classList.remove('zoomable');
+
+			if(zoomElement.classList.contains('fa-search-plus')){
+				zoomElement.classList.add('fa-search-minus');
+				zoomElement.classList.remove('fa-search-plus');
+			}
+		}
+		if(isZoomOut && zoomAction == 'out'){
+			targetElParents.style.width = '';
+			targetElParents.style.height = '';
+			targetElParents.removeAttribute('width');
+
+			zoomableImage.style.width = '';
+			zoomableImage.style.height = '';
+			zoomableImage.removeAttribute('width');
+			zoomableImage.scrollTop = 0;
+
+			if(zoomableImageHeight >= windowHeight){
+				zoomableImage.height = windowHeight + 'px';
+				zoomableImage.style.height = windowHeight + 'px';
+				zoomableImage.style.top = 0;
+				targetElParents.style.height = windowHeight + 'px';
+			}
+
+			else if(zoomableImageWidth <= windowWidth){
+				zoomableImage.width = (zoomableImageWidth - (windowWidth * .20)) + 'px';
+				zoomableImage.style.width = (windowWidth - (windowWidth * .20)) + 'px';
+				targetElParents.style.width = (windowWidth - (windowWidth * .20)) + 'px';
+			}
+
+			zoomableImage.classList.add('zoomable');
+
+			if(zoomElement.classList.contains('fa-search-minus')){
+				zoomElement.classList.add('fa-search-plus');
+				zoomElement.classList.remove('fa-search-minus');
+			}
+		}
 	}
 	
 	viewBox.addEventListener('click', function(e){
-		
-		if(e.target.localName !== 'img'){
-			if(e.target.classList.contains('fa-search-plus')){
-				e.target.parentElement.parentElement.style.width = '';
-				e.target.parentElement.parentElement.style.height = '';
-				e.target.parentElement.parentElement.removeAttribute('height');
+		targetEl = e.target;
+		targetElType = e.target.localName;
+		targetElClasses = e.target.classList;
+		targetElParent = e.target.parentElement;
+		targetElParents = e.target.parentElement.parentElement;
 
-				let zoomableImage = e.target.parentElement.parentElement.querySelector('img');
-				zoomableImage.style.width = '';
-				zoomableImage.style.height = '';
-				zoomableImage.removeAttribute('height');
-
-				if(zoomableImage.clientHeight <= window.innerHeight){
-					zoomableImage.height = window.innerHeight + 'px';
-					zoomableImage.style.height = window.innerHeight + 'px';
-					zoomableImage.style.top = 0;
-					e.target.parentElement.parentElement.style.height = window.innerHeight + 'px';
-				}
-
-				if(zoomableImage.clientWidth >= window.innerWidth){
-					zoomableImage.width = (zoomableImage.clientWidth - (window.innerWidth * .20)) + 'px';
-					zoomableImage.style.width = (window.innerWidth - (window.innerWidth * .20)) + 'px';
-					e.target.parentElement.parentElement.style.width = (window.innerWidth - (window.innerWidth * .20)) + 'px';
-				}
-				zoomableImage.classList.remove('zoomable');
-				e.target.classList.remove('fa-search-plus');
-				e.target.classList.add('fa-search-minus');
-			}
-			else if(e.target.classList.contains('fa-search-minus')){
-				let targetImage = e.target.parentElement.parentElement.querySelector('img');
-				targetImage.style.width = '';
-				targetImage.style.height = '';
-				targetImage.scrollTop = 0;
-
-				targetImage.setAttribute('style',  `height: ${window.innerHeight}px`);
-				targetImage.setAttribute('height',  `${window.innerHeight}px`);
+		if(targetElType !== 'img'){
+			const zoomAction = (e.target.classList.contains('fa-search-plus'))? 'in' : ((e.target.classList.contains('fa-search-minus'))? 'out' : 'none');
+			
+			if(zoomAction !== 'none'){zoomImage(e, zoomAction);}
+			if(zoomAction == 'none') {
 				
-				targetImage.classList.add('zoomable');
-
-				e.target.classList.add('fa-search-plus');
-				e.target.classList.remove('fa-search-minus');
-			}
-			else {
 				let galleryItems = document.querySelectorAll('.gallery > .gallery-item');
-				let pictureElement = (e.target.localName == 'picture')? e.target : 
-										((e.target.localName == 'span')? e.target.parentElement.parentElement : e.target.parentElement);
+				let pictureElement = (targetElType == 'picture')? targetEl : 
+										((targetElType == 'span')? targetElParents : targetElParent);
 				pictureElement = (pictureElement.localName == 'picture')? pictureElement : 
-									((e.target.localName == 'i' && e.target.classList.contains('fa'))? e.target.parentElement.parentElement.parentElement : e.target.parentElement.querySelector('picture'));
+									((targetElType == 'i' && targetEl.classList.contains('fa'))? targetElParents.parentElement : targetElParent.querySelector('picture'));
 				
 				let imageElement = pictureElement.querySelector('img');
-				let isPreviousClick = e.target.parentElement.classList.contains('previous');
-				let isNextClick= e.target.parentElement.classList.contains('next');
-
+				let isPreviousClick = targetElParent.classList.contains('previous');
+				let isNextClick= targetElParent.classList.contains('next');
+				let isCancelPreview = targetElParent.classList.contains('cancel-preview');
+				
 				if(isPreviousClick || isNextClick){
 					let targetIndex = document.querySelector(".view-box").querySelector('img').getAttribute('data-index');
 					let goBy = (isNextClick)? 1 : -1;
@@ -180,17 +254,14 @@ let viewImageOverlay = function(state='') {
 						});
 					}
 				}
-				else {
-					if(e.target.localName == 'picture'){return;}
-
-					if(e.target.localName == 'span'){
-						viewBox.classList.remove('view');
-						document.querySelector('body').classList.remove('no-scroll');
-					}
+				else if(isCancelPreview){
+					let galleryImages = document.querySelectorAll(".gallery > div > .gallery-image");
+					let viewBox = document.querySelector(".view-box");
+					hidePreviewImage(galleryImages,viewBox);
 				}
 			}
 		}
-		else if(e.target.localName == 'img'){
+		else if(targetElType == 'img'){
 			e.target.style.width = '';
 			e.target.style.height = '';
 			let zoomElement = e.target.parentElement.querySelector('.preview-zoom i');
@@ -534,7 +605,7 @@ window.addEventListener('scroll', function() {
 	"use strict"; // Enforce strict JavaScript mode for error prevention
   
 	// Get the offset position of the "loader" element, adjusted for a 80px buffer
-	let top = Math.floor(document.querySelector(".loader").offsetTop) - 150;
+	let top = `${Math.floor((document.querySelector(".loader").offsetTop) - Math.floor(document.querySelector(".loader").offsetTop * (1 - .35)))}`;
 	let loader = document.querySelector(".loader");
 
 	// If the current scroll position is past the top threshold:
