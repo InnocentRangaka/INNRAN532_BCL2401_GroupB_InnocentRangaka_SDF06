@@ -80,8 +80,6 @@ let hidePreviewImage = function(galleryImages,viewBox) {
 	viewBox.classList.remove('view');
 	body.classList.remove('no-scroll');
 
-	console.log('sdfsdfsdf');
-
 	viewedImage.src = '';
 	viewedImage.classList.remove('zoomable');
 	galleryImages.forEach(function(img){
@@ -127,19 +125,29 @@ let viewImageOverlay = function(state='') {
 		targetElType = e.target.localName;
 		targetElClasses = e.target.classList;
 		targetElParent = e.target.parentElement;
-		targetElParents = e.target.parentElement.parentElement;
-		zoomableImage = targetElParents.querySelector('img');
-		zoomableImageHeight = zoomableImage.clientHeight;
-		zoomableImageWidth = zoomableImage.clientWidth;
+		
+		if(targetElType !== 'img'){
+			targetElParents = e.target.parentElement.parentElement;
+			zoomableImage = targetElParents.querySelector('img');
+			zoomableImageHeight = zoomableImage.clientHeight;
+			zoomableImageWidth = zoomableImage.clientWidth;
+		}
+
+		if(targetElType == 'img'){
+			targetElParents = e.target.parentElement;
+			zoomableImage = targetElParents.querySelector('img');
+			zoomableImageHeight = windowHeight;
+			zoomableImageWidth = '';
+		}
+
 		zoomElement = targetElParent.querySelector('.preview-zoom i');
 
 		let isZoomIn = targetElClasses.contains('fa-search-plus');
 		const isZoomOut = targetElClasses.contains('fa-search-minus');
 		const zoomAction = action.toLocaleLowerCase();
+		let isZoomable = (targetElClasses.contains('zoomable'))? true : false;
 
-
-		if(isZoomIn && zoomAction == 'in'){
-			
+		let zoomIn = function(){
 			targetElParents.style.width = '';
 			targetElParents.style.height = '';
 			targetElParents.removeAttribute('style','height');
@@ -171,7 +179,7 @@ let viewImageOverlay = function(state='') {
 				zoomElement.classList.remove('fa-search-plus');
 			}
 		}
-		if(isZoomOut && zoomAction == 'out'){
+		let zoomOut = function(){
 			targetElParents.style.width = '';
 			targetElParents.style.height = '';
 			targetElParents.removeAttribute('width');
@@ -200,6 +208,22 @@ let viewImageOverlay = function(state='') {
 				zoomElement.classList.add('fa-search-plus');
 				zoomElement.classList.remove('fa-search-minus');
 			}
+		}
+
+
+		if(isZoomIn && zoomAction == 'in'){
+			zoomIn();
+		}
+		if(isZoomOut && zoomAction == 'out'){
+			zoomOut();
+		}
+		if(isZoomable && zoomAction == 'in' && targetElType == 'img'){
+			targetElClasses.remove('zoomable');
+			zoomIn();
+		}
+		if(!isZoomable && zoomAction == 'out' && targetElType == 'img'){
+			targetElClasses.add('zoomable');
+			zoomOut();
 		}
 	}
 	
@@ -259,84 +283,22 @@ let viewImageOverlay = function(state='') {
 					let viewBox = document.querySelector(".view-box");
 					hidePreviewImage(galleryImages,viewBox);
 				}
+				else{return;}
 			}
 		}
 		else if(targetElType == 'img'){
-			e.target.style.width = '';
-			e.target.style.height = '';
-			let zoomElement = e.target.parentElement.querySelector('.preview-zoom i');
+			// e.target.style.width = '';
+			// e.target.style.height = '';
+			// let zoomElement = e.target.parentElement.querySelector('.preview-zoom i');
 
-			if(!e.target.classList.contains('zoomable')){
+			
+			let isZoomable = (targetElClasses.contains('zoomable'))? true : false;
 
-				e.target.removeAttribute('style',  'transform');
-
-				if(zoomElement.classList.contains('fa-search-plus')){
-					zoomElement.classList.add('fa-search-minus');
-					zoomElement.classList.remove('fa-search-plus');
-				}
-				else if(zoomElement.classList.contains('fa-search-minus')){
-					zoomElement.classList.add('fa-search-plus');
-					zoomElement.classList.remove('fa-search-minus');
-				}
-	
-				if(!e.target.classList.contains('zoomable')){
-					e.target.parentElement.style.height = '';
-					e.target.parentElement.removeAttribute('height');
-					e.target.classList.add('zoomable');
-
-					e.target.parentElement.style.width = '';
-					e.target.removeAttribute('width');
-					e.target.style.width = '';
-					e.target.parentElement.removeAttribute('width');
-					e.target.parentElement.removeAttribute('style',  `width`);
-					
-					e.target.height = window.innerHeight + 'px';
-					e.target.style.height = window.innerHeight + 'px';
-					e.target.parentElement.style.height = window.innerHeight + 'px';
-					e.target.parentElement.setAttribute('height',  `${window.innerHeight}px`);
-				}
+			if(isZoomable){
+				zoomImage(e, 'in');
 			}
 			else {
-				
-				let zoomableImage = e.target;
-				
-				if(zoomElement.classList.contains('fa-search-plus')){
-					zoomElement.classList.add('fa-search-minus');
-					zoomElement.classList.remove('fa-search-plus');
-				} 
-
-				else if(zoomElement.classList.contains('fa-search-minus')){
-					zoomElement.classList.add('fa-search-plus');
-					zoomElement.classList.remove('fa-search-minus');
-				}
-				
-				if(e.target.classList.contains('zoomable')){
-					e.target.classList.remove('zoomable');
-
-					e.target.style.transform = `scale(1)`;
-
-					e.target.parentElement.setAttribute('width',  `${window.innerWidth}px`);
-					e.target.parentElement.setAttribute('style',  `width: ${window.innerWidth}px`)
-					
-					e.target.parentElement.setAttribute('width',  `${window.innerWidth}px`);
-					e.target.parentElement.setAttribute('style',  `width: ${window.innerWidth}px`);
-				}
-				else if(!e.target.classList.contains('zoomable')){
-					e.target.parentElement.style.height = '';
-					e.target.parentElement.removeAttribute('height');
-					e.target.classList.add('zoomable');
-
-					e.target.parentElement.style.width = '';
-					e.target.removeAttribute('width');
-					e.target.style.width = '';
-					e.target.parentElement.removeAttribute('width');
-					e.target.parentElement.removeAttribute('style',  `width`);
-					
-					e.target.height = window.innerHeight + 'px';
-					e.target.style.height = window.innerHeight + 'px';
-					e.target.parentElement.style.height = window.innerHeight + 'px';
-					e.target.parentElement.setAttribute('height',  `${window.innerHeight}px`);
-				}
+				zoomImage(e, 'out');
 			}
 		}
 	});
