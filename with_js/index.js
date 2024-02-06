@@ -55,6 +55,18 @@ let showPreviewImage = function(galleryImages,viewBox) {
 	viewBox.querySelector("picture").scrollTop = 0;
 	viewedImage.src = viewImageHref;
 	viewedImage.setAttribute('data-index', viewImageTabIndex);
+
+	const makeArray = Array.from(galleryImages);
+	const getLast = (makeArray.length - 1);
+	const makeFirst = makeArray[0].parentElement.tabIndex;
+	const makeLast = makeArray[getLast].parentElement.tabIndex;
+
+	if(viewImageTabIndex <= makeFirst){
+		viewBox.querySelector('.preview-nav-item.previous').setAttribute('disabled', true);
+	}
+	if(viewImageTabIndex >= makeLast){
+		viewBox.querySelector('.preview-nav-item.next').setAttribute('disabled', true);
+	}
 	
 	viewBox.querySelector("picture").setAttribute('style',  `height: ${window.innerHeight}px`);
 	viewedImage.setAttribute('height',  `${window.innerHeight}px`);
@@ -85,6 +97,15 @@ let hidePreviewImage = function(galleryImages,viewBox) {
 	galleryImages.forEach(function(img){
 		img.removeAttribute('zoomable');
 	});
+
+	viewBox.querySelector("picture").scrollTop = 0;
+	
+	viewedImage.setAttribute('data-index', '');
+	
+	viewBox.querySelector("picture").removeAttribute('style',  `height`);
+	viewedImage.removeAttribute('height');
+	
+	viewedImage.classList.remove('zoomable');
 	
 	if(viewedImage.parentElement.querySelector('.preview-zoom i').classList.contains('fa-search-minus')){
 		viewedImage.parentElement.querySelector('.preview-zoom i').classList.add('fa-search-plus');
@@ -240,22 +261,22 @@ let viewImageOverlay = function(state='') {
 			if(zoomAction !== 'none'){zoomImage(e, zoomAction);}
 			if(zoomAction == 'none') {
 				
-				let galleryItems = document.querySelectorAll('.gallery > .gallery-item');
 				let pictureElement = (targetElType == 'picture')? targetEl : 
 										((targetElType == 'span')? targetElParents : targetElParent);
 				pictureElement = (pictureElement.localName == 'picture')? pictureElement : 
 									((targetElType == 'i' && targetEl.classList.contains('fa'))? targetElParents.parentElement : targetElParent.querySelector('picture'));
 				
-				let imageElement = pictureElement.querySelector('img');
 				let isPreviousClick = targetElParent.classList.contains('previous');
 				let isNextClick= targetElParent.classList.contains('next');
 				let isCancelPreview = targetElParent.classList.contains('cancel-preview');
 				
 				if(isPreviousClick || isNextClick){
+					targetElParent.parentElement.querySelector('.preview-nav-item').removeAttribute('disabled');
 					let targetIndex = document.querySelector(".view-box").querySelector('img').getAttribute('data-index');
 					let goBy = (isNextClick)? 1 : -1;
 					let newTargetIndex = parseInt(targetIndex) + goBy;
 					let newTarget = document.querySelector(`.gallery > .gallery-item[tabindex="${newTargetIndex}"]`);
+					let newTargetSrc;
 					if(newTarget !== null){
 						newTargetSrc = newTarget.querySelector('img').src;
 						
@@ -277,6 +298,24 @@ let viewImageOverlay = function(state='') {
 							viewedImage.removeAttribute('width');
 						});
 					}
+					if(newTarget == null){targetElParent.setAttribute('disabled', true);}
+
+					const makeArray = Array.from(galleryImages);
+					const getLast = (makeArray.length - 1);
+					const makeFirst = makeArray[0].parentElement.tabIndex;
+					const makeLast = makeArray[getLast].parentElement.tabIndex;
+
+					if((isPreviousClick || isNextClick) && ((newTargetIndex > makeFirst) || (newTargetIndex < makeLast))){
+						viewBox.querySelector('.preview-nav-item.previous').removeAttribute('disabled', true);
+						viewBox.querySelector('.preview-nav-item.next').removeAttribute('disabled', true);
+					}
+
+					if(isNextClick && (newTargetIndex == makeLast)){
+						viewBox.querySelector('.preview-nav-item.next').setAttribute('disabled', true);
+					}
+					if(isPreviousClick && (newTargetIndex == makeFirst)){
+						viewBox.querySelector('.preview-nav-item.previous').setAttribute('disabled', true);
+					}
 				}
 				else if(isCancelPreview){
 					let galleryImages = document.querySelectorAll(".gallery > div > .gallery-image");
@@ -287,11 +326,7 @@ let viewImageOverlay = function(state='') {
 			}
 		}
 		else if(targetElType == 'img'){
-			// e.target.style.width = '';
-			// e.target.style.height = '';
-			// let zoomElement = e.target.parentElement.querySelector('.preview-zoom i');
 
-			
 			let isZoomable = (targetElClasses.contains('zoomable'))? true : false;
 
 			if(isZoomable){
@@ -526,7 +561,6 @@ let active = false; // Flag to prevent multiple calls
 let loadingImages = function(){
 	"use strict";
 	
-	let scrollTop = window.innerHeight * 0.99; // Scroll position near bottom
 	let loader = document.querySelector(".loader");
 
 	if (active !== true) { // If not already loading

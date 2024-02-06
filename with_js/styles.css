@@ -535,18 +535,19 @@ svg.tab-icon {
 	top: 0;
 	right: 0;
 	color: rgb(180, 180, 180);
-	background-color: rgba(0,0,0,.8);
-	z-index: 10;
+	background-color: rgba(0,0,0,.3);
+	padding-top: 1px;
 	margin: 10px;
 	border-radius: 50%;
 	cursor: pointer;
 	font-size: 20px;
 	text-align: center;
 	line-height: 1.1;
+	z-index: 10;
 	transition: all .3s;
 }
 .cancel-preview:hover {
-	transform: rotate(360deg);
+	transform: rotate(360deg) scale(1.2);
 	color: white;
 	background-color: black;
 }
@@ -568,13 +569,16 @@ svg.tab-icon {
 	height: 150px;
 	font-size: 50px;
 	color: rgb(180, 180, 180);
-	background-color: rgba(0,0,0,.8);
+	background-color: rgba(0,0,0,.3);
 	border-radius: 8px;
 	place-content: center;
   place-items: center;
 	cursor: pointer;
 }
 
+.preview-nav .preview-nav-item:hover {
+	background-color: rgba(0,0,0,.8);
+}
 .preview-nav .preview-nav-item:hover > i {
 	display: flex;
 	position: relative;
@@ -585,6 +589,17 @@ svg.tab-icon {
 	place-content: center;
 	place-items: center;
 	align-items: center;
+}
+
+.preview-nav .preview-nav-item:active > i {
+	transform: scale(.8);
+}
+
+.preview-nav .preview-nav-item[disabled='true'],
+.preview-nav .preview-nav-item[disabled='true']:hover > i,
+.preview-nav .preview-nav-item[disabled='true']:active > i {
+	color: #FFF;
+	transform: scale(0);
 }
 
 .preview-nav .preview-nav-item.previous {
