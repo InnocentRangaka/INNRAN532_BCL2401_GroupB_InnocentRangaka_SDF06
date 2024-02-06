@@ -312,7 +312,7 @@ let imgResize = function() {
   let igLayoutWidth = document.querySelector(".ig-layout").clientWidth;
 
   // Calculate image width based on window size and scaling factor
-  let widthPercent = (77.05 / 320);
+  let widthPercent = (77.05 / 445);
   let makeWidth = (window.innerWidth <= 1528)
     ? Math.floor(igLayoutWidth * widthPercent)
     : Math.floor(window.innerWidth * widthPercent);
